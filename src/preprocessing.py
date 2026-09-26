@@ -50,7 +50,7 @@ def fix_data_types(df: pd.DataFrame, audit: list[dict] | None = None) -> pd.Data
         out["Date"] = pd.to_datetime(out["Date"], errors="coerce")
     if "Time" in out.columns:
         # Keep the source time column while deriving a canonical datetime.
-        parsed_time = pd.to_datetime(out["Time"].astype("string"), errors="coerce")
+        parsed_time = pd.to_datetime(\n            out["Time"].astype("string").str.strip(),\n            format="%H:%M:%S",\n            errors="coerce",\n        )
         if "Date" in out.columns:
             out["Booking_DateTime"] = pd.to_datetime(
                 out["Date"].dt.strftime("%Y-%m-%d") + " " +
