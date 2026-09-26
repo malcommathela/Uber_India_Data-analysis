@@ -4,7 +4,7 @@
 **Project Title:** Reducing Ride Cancellations and Improving Operational Efficiency: A Data Analysis of Uber Ride Bookings in India (2024)  
 **Review Date:** 5/7/26 (Team 8–17)  
 **Environment:** PyCharm + Python + Jupyter  
-**Status:** Review-1 Preparation Phase
+**Status:** Review-2 Eight-Stage Pipeline Refactor
 
 ---
 
@@ -12,7 +12,7 @@
 
 The rapid growth of ride-hailing platforms has transformed urban transportation in India. However, ride cancellations, inefficient fleet allocation, and inconsistent customer experiences remain critical operational challenges that directly impact revenue and customer retention.
 
-This project analyzes the **Uber Data India (2024) dataset containing 148,770 ride bookings** to uncover patterns in booking success, cancellations, vehicle usage, trip distances, payment methods, ratings, and revenue generation. The analysis aims to identify the root causes of cancellations, discover high-demand periods, evaluate vehicle category performance, and provide data-driven recommendations to reduce cancellations and improve operational efficiency.
+This project analyzes the **Uber Data India (2024) dataset containing the actual records present in the submitted source dataset ride bookings** to uncover patterns in booking success, cancellations, vehicle usage, trip distances, payment methods, ratings, and revenue generation. The analysis aims to identify the root causes of cancellations, discover high-demand periods, evaluate vehicle category performance, and provide data-driven recommendations to reduce cancellations and improve operational efficiency.
 
 **Core Research Question:** *What factors drive ride cancellations and operational inefficiencies in Uber's India operations, and how can data analytics inform strategies to reduce cancellations and optimize fleet allocation?*
 
@@ -21,7 +21,7 @@ This project analyzes the **Uber Data India (2024) dataset containing 148,770 ri
 ## 2. Objectives
 
 1. **Data Preparation & Quality Assurance**
-   - Clean the Uber dataset (148,770 records) by handling missing values, duplicates, and inconsistent formatting.
+   - Clean the Uber dataset (the actual records present in the submitted source dataset records) by handling missing values, duplicates, and inconsistent formatting.
    - Engineer features: booking success rate, cancellation flags, revenue per km, time-based bins (hour, day, month), waiting time categories.
 
 2. **Exploratory Data Analysis (EDA)**
@@ -56,7 +56,7 @@ This project analyzes the **Uber Data India (2024) dataset containing 148,770 ri
 | Attribute | Value |
 |-----------|-------|
 | **Source** | Uber Data India (2024) — Kaggle / Internal Dataset |
-| **Total Records** | 148,770 ride bookings |
+| **Total Records** | the actual records present in the submitted source dataset ride bookings |
 | **Time Period** | 2024 (full year) |
 | **File Location** | `data/raw/uber_data_india_2024.csv` |
 
@@ -115,7 +115,7 @@ This project analyzes the **Uber Data India (2024) dataset containing 148,770 ri
 
 ```
 Phase 1: Data Ingestion
-    └── Load Uber dataset (148,770 records) into pandas DataFrame
+    └── Load Uber dataset (the actual records present in the submitted source dataset records) into pandas DataFrame
 
 Phase 2: Data Cleaning & Preprocessing
     └── Handle missing values → Remove duplicates → Fix data types
@@ -163,7 +163,7 @@ Phase 8: Dashboard & Reporting
 | Task | Status | Notes |
 |------|--------|-------|
 | Project folder structure created | ✅ Complete | All directories and starter files ready |
-| Dataset downloaded | ✅ Complete | 148,770 records in `data/raw/` |
+| Dataset downloaded | ✅ Complete | the actual records present in the submitted source dataset records in `data/raw/` |
 | Virtual environment set up | ✅ Complete | `venv` created, dependencies installed |
 | Initial data loading script | ✅ Complete | `src/data_loader.py` loads the dataset |
 | Missing value analysis | 🔄 In Progress | Preliminary findings: ~X% missing in VTAT/CTAT |
@@ -322,3 +322,35 @@ python dashboard/app.py
 *Last Updated: 2026-08-01*  
 *Project: Uber Data India (2024) Analysis*  
 *IDE: PyCharm*
+
+
+---
+
+## 9. Review-2 Eight-Stage Dataset Pipeline
+
+The implementation now follows the mandatory submission stages:
+
+1. Data Loading & Reading
+2. Data Acquisition & Filtering
+3. Data Extraction
+4. Data Validation & Cleaning
+5. Data Aggregation & Representation
+6. Data Analysis
+7. Data Visualization
+8. Results & Interpretation
+
+### Data-quality decisions
+
+- The actual source dataset is authoritative; record counts are never hard-coded.
+- Customer cancellation, driver cancellation, no-driver-found and incomplete outcomes are reported separately.
+- Ratings, VTAT and CTAT are not median-imputed because missingness can be structural.
+- Booking Value and Ride Distance outliers are flagged rather than silently capped.
+- Revenue analysis uses completed rides for realized booking-value summaries.
+- Rating analysis reports observed-rating coverage.
+- Every reported rate must state its denominator.
+
+Run the complete pipeline from the repository root with:
+
+```bash
+python run_pipeline.py
+```

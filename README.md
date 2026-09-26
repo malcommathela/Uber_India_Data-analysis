@@ -22,40 +22,54 @@ This project analyzes **148,770 Uber ride bookings** from India (2024) to identi
 
 ---
 
-## 📁 Project Structure
+## 📁 Review-2 Eight-Stage Pipeline
 
-```
-uber-data-india-analysis/
+The project is organized around the eight mandatory Capstone Review-2 stages:
+
+```text
+Uber_India_Data-analysis/
+├── 01_Data_Loading_and_Reading/
+├── 02_Data_Acquisition_and_Filtering/
+├── 03_Data_Extraction/
+├── 04_Data_Validation_and_Cleaning/
+├── 05_Data_Aggregation_and_Representation/
+├── 06_Data_Analysis/
+├── 07_Data_Visualization/
+├── 08_Results_and_Interpretation/
 ├── data/
-│   ├── raw/                          # Original dataset
-│   │   └── uber_data_india_2024.csv
-│   └── processed/                    # Cleaned & engineered data
-│       └── cleaned_uber_data.csv
-├── notebooks/
-│   ├── 01_data_cleaning.ipynb        # Data loading & cleaning
-│   ├── 02_eda_booking_trends.ipynb   # Booking trends EDA
-│   ├── 03_cancellation_analysis.ipynb # Cancellation deep-dive
-│   ├── 04_revenue_and_ratings.ipynb  # Revenue & ratings analysis
-│   ├── 05_operational_efficiency.ipynb # Operational metrics
-│   └── 06_predictive_modeling.ipynb  # ML models (stretch goal)
+│   ├── raw/
+│   └── processed/
 ├── src/
-│   ├── __init__.py
-│   ├── data_loader.py                # Dataset loading & inspection
-│   ├── preprocessing.py              # Data cleaning pipeline
-│   ├── feature_engineering.py        # Feature creation
-│   ├── visualization.py              # Reusable plotting functions
-│   └── model_utils.py                # ML model training utilities
 ├── outputs/
-│   ├── figures/                      # Saved visualisations
-│   └── models/                       # Trained ML models
-├── dashboard/                        # Interactive dashboard
-│   └── app.py
 ├── reports/
-│   └── review1_presentation.pptx     # Review 1 slides
-├── requirements.txt                  # Python dependencies
-├── README.md                         # This file
-└── PROJECT_SPEC.md                   # Full project documentation
+├── README.md
+└── requirements.txt
 ```
+
+### Pipeline order
+
+1. **Data Loading & Reading** — establish the raw-data baseline.
+2. **Data Acquisition & Filtering** — document provenance and explicit filters.
+3. **Data Extraction** — derive temporal and analytical fields.
+4. **Data Validation & Cleaning** — validate ranges, preserve structural missingness, and audit transformations.
+5. **Data Aggregation & Representation** — produce reproducible KPI/summary tables.
+6. **Data Analysis** — answer booking, cancellation, revenue, rating and operational questions.
+7. **Data Visualization** — generate charts from the analytical tables.
+8. **Results & Interpretation** — document evidence, interpretation, implications and limitations.
+
+### Reproducibility rule
+
+The actual dataset loaded from the raw-data directory is the source of truth. The repository previously contained a documentation discrepancy between **148,770** records and a notebook output of **150,000** rows. The refactored pipeline does not hard-code either value.
+
+### Metric definitions
+
+- **Cancellation:** customer or driver cancellation.
+- **Unfulfilled:** `No Driver Found`; reported separately from cancellation.
+- **Incomplete:** incomplete ride; reported separately.
+- **Completion:** booking status indicates completed.
+- **Rating metrics:** use observed ratings only; missing ratings are not median-imputed.
+- **Revenue analysis:** completed rides are used for realized booking-value analysis.
+- **Outliers:** flagged for review instead of silently capped.
 
 ---
 

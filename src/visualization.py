@@ -16,8 +16,10 @@ plt.rcParams['figure.figsize'] = (12, 6)
 plt.rcParams['font.size'] = 10
 
 
-def save_figure(filename: str, output_dir: str = "../outputs/figures") -> None:
+def save_figure(filename: str, output_dir: str | None = None) -> None:
     """Save figure to the outputs directory."""
+    if output_dir is None:
+        output_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "outputs", "figures"))
     os.makedirs(output_dir, exist_ok=True)
     filepath = os.path.join(output_dir, filename)
     plt.savefig(filepath, dpi=300, bbox_inches='tight')
@@ -34,11 +36,15 @@ def plot_booking_trends(df: pd.DataFrame, save: bool = False) -> None:
 
     # Monthly bookings
     if 'Booking_Month' in df.columns:
-        month_order = ['January', 'February', 'March', 'April', 'May', 'June',
-                       'July', 'August', 'September', 'October', 'November', 'December']
-        monthly = df['Booking_Month'].value_counts()
-        monthly = monthly.reindex([m for m in month_order if m in monthly.index])
-        monthly.plot(kind='bar', ax=axes[0], color='steelblue')
+        month_order = list(range(1, 13))
+        monthly = pd.to_numeric(df['Booking_Month'], errors='coerce').dropna().astype(int).value_counts()
+        monthly = monthly.reindex(month_order, fill_value=0)
+        monthly.index = pd.Index(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
+        if monthly.sum() > 0:
+            monthly.plot(kind='bar', ax=axes[0], color='steelblue')
+        else:
+            axes[0].text(0.5, 0.5, 'No monthly booking data', ha='center', va='center', transform=axes[0].transAxes)
         axes[0].set_title('Monthly Bookings', fontsize=12, fontweight='bold')
         axes[0].set_xlabel('Month')
         axes[0].set_ylabel('Number of Bookings')
@@ -161,7 +167,8 @@ def plot_revenue_analysis(df: pd.DataFrame, save: bool = False) -> None:
 
     # Revenue by vehicle type
     if 'Vehicle Type' in df.columns and 'Booking Value' in df.columns:
-        revenue_by_vehicle = df.groupby('Vehicle Type')['Booking Value'].sum().sort_values(ascending=False)
+        revenue_df = df[df['Is_Completed'] == True] if 'Is_Completed' in df.columns else df
+        revenue_by_vehicle = revenue_df.groupby('Vehicle Type')['Booking Value'].sum().sort_values(ascending=False)
         if len(revenue_by_vehicle) > 0:
             revenue_by_vehicle.plot(kind='bar', ax=axes[0], color='mediumseagreen')
             axes[0].set_title('Total Revenue by Vehicle Type', fontsize=12, fontweight='bold')
@@ -176,7 +183,8 @@ def plot_revenue_analysis(df: pd.DataFrame, save: bool = False) -> None:
 
     # Revenue by payment method
     if 'Payment Method' in df.columns and 'Booking Value' in df.columns:
-        revenue_by_payment = df.groupby('Payment Method')['Booking Value'].sum().sort_values(ascending=False)
+        revenue_df = df[df['Is_Completed'] == True] if 'Is_Completed' in df.columns else df
+        revenue_by_payment = revenue_df.groupby('Payment Method')['Booking Value'].sum().sort_values(ascending=False)
         if len(revenue_by_payment) > 0:
             revenue_by_payment.plot(kind='bar', ax=axes[1], color='mediumpurple')
             axes[1].set_title('Revenue by Payment Method', fontsize=12, fontweight='bold')
@@ -191,7 +199,8 @@ def plot_revenue_analysis(df: pd.DataFrame, save: bool = False) -> None:
 
     # Booking value distribution
     if 'Booking Value' in df.columns:
-        data = df['Booking Value'].dropna()
+        revenue_df = df[df['Is_Completed'] == True] if 'Is_Completed' in df.columns else df
+        data = revenue_df['Booking Value'].dropna()
         if len(data) > 0:
             axes[2].hist(data, bins=50, color='skyblue', edgecolor='black', alpha=0.7)
             axes[2].set_title('Booking Value Distribution', fontsize=12, fontweight='bold')
