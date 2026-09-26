@@ -5,7 +5,7 @@ from src.feature_engineering import engineer_all_features
 from src.preprocessing import clean_dataset
 
 ROOT = Path(__file__).resolve().parents[1]
-INPUT = ROOT / "02_Data_Acquisition_and_Filtering" / "filtered_dataset.csv"
+INPUT = ROOT / "04_Data_Validation_and_Cleaning" / "cleaned_dataset.csv"
 OUT = ROOT / "03_Data_Extraction" / "extracted_dataset.csv"
 
 df = pd.read_csv(INPUT)
