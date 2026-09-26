@@ -20,12 +20,15 @@ def extract_temporal_features(df: pd.DataFrame) -> pd.DataFrame:
     out["Booking_Weekday"] = dt.dt.day_name()
     out["Is_Weekend"] = dt.dt.weekday >= 5
 
-    out["Time_of_Day"] = pd.cut(
-        out["Booking_Hour"],
-        bins=[-1, 4, 11, 16, 20, 24],
-        labels=["Night", "Morning", "Afternoon", "Evening", "Night"],
-        right=True,
-    ).astype("string")
+    out["Time_of_Day"] = np.select(
+        [
+            out["Booking_Hour"].between(5, 11, inclusive="both"),
+            out["Booking_Hour"].between(12, 16, inclusive="both"),
+            out["Booking_Hour"].between(17, 20, inclusive="both"),
+        ],
+        ["Morning", "Afternoon", "Evening"],
+        default="Night",
+    )
     return out
 
 
